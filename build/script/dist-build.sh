@@ -48,9 +48,9 @@ cp -a $SERVER_SRC_DIR/composer.* .
 if [[ $BUILD_TARGET == *"source"* ]]; then
   composer install > /dev/null
 else 
-  composer install --no-dev  &> /dev/null
+  composer install --no-dev  #&> /dev/null
 fi
-rm -f ./composer.* &> /dev/null
+#rm -f ./composer.* &> /dev/null
 
 echo " >>> Adding documentation ..."
 cp $TOP_DIR/{readme.md,release-notes.md} $DIST_DIR

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a2e92f16e2a11a82ea324ef8728c684c",
+    "content-hash": "25a224a272b14cb34ead5996b40c7c75",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -745,14 +745,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/fourteenmeister/dsn.git",
-                "reference": "abab180a940c05604812749690f2d3a3d1a6bf66"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/fourteenmeister/dsn/zipball/abab180a940c05604812749690f2d3a3d1a6bf66",
-                "reference": "abab180a940c05604812749690f2d3a3d1a6bf66",
-                "shasum": ""
+                "url": "https://github.com/cboulanger/dsn.git",
+                "reference": "af75100114d5c323fb0ec85e44bebdac4f21bfe5"
             },
             "require": {
                 "yiisoft/yii2": "2.*"
@@ -763,7 +757,6 @@
                     "fourteenmeister\\helpers\\": "src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -782,7 +775,11 @@
                 "widgets",
                 "yii2"
             ],
-            "time": "2018-01-07T09:07:12+00:00"
+            "support": {
+                "issues": "https://github.com/fourteenmeister/dsn/issues",
+                "source": "https://github.com/fourteenmeister/dsn"
+            },
+            "time": "2018-06-23T18:51:49+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
