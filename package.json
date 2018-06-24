@@ -20,6 +20,7 @@
   "scripts": {
     "start": "build/script/start-server.sh",
     "list": "node_modules/.bin/ls-scripts",
+    "preinstall": "export GIT_HOOKS_PATH=./build/hooks",
     "postinstall": "build/script/update-dependencies.sh",
     "server": "build/script/start-server.sh",
     "test": "test/script/codeception-all.sh && test/script/api.sh || exit $?",
@@ -60,6 +61,7 @@
     "r2": "^2.0.0",
     "release-it": "^7.3.0",
     "run-script-os": "^1.0.3",
+    "shared-git-hooks": "^1.2.1",
     "standard": "^11.0.0",
     "webpack": "^3.10.0"
   },
