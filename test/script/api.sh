@@ -14,10 +14,11 @@ pushd $SERVER_PATH > /dev/null
 php $SERVER_CMD & # &> /dev/null &
 bg_pid=$!
 trap "kill -2 $bg_pid" 2
+ps
 ps | grep "[p]hp $SERVER_CMD" #> /dev/null
 if [ $? -eq 1 ]; then
   echo "Failed to start test server..."
-  exit 1
+  # exit 1
 fi
 echo "Started Bibliograph test server..."
 echo
