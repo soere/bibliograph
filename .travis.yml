@@ -12,19 +12,16 @@ before_install:
   - sudo apt-get install -y bibutils zip
   - PHPVERSION=$(phpenv version-name)
   - echo "PHP version is $PHPVERSION"
-
-# configure PHP with yaz/xsl/intl extensions
- - sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update 
- - sudo apt-get install -y php${PHPVERSION}-xsl php${PHPVERSION}-intl
- - sudo apt-get install -y yaz libyaz4-dev
- - pear channel-update pear.php.net && yes $'\n' | pecl install yaz && pear install Structures_LinkedList-0.2.2 && pear install File_MARC
- - sudo service apache2 restart
- - if php -i | grep yaz --quiet && echo '<?php exit(function_exists("yaz_connect")?0:1);' | php ; then echo "YAZ is installed"; else echo "YAZ installation failed"; exit 1; fi;
+  - sudo add-apt-repository -y ppa:ondrej/php && sudo apt-get update 
+  - sudo apt-get install -y php${PHPVERSION}-xsl php${PHPVERSION}-intl
+  - sudo apt-get install -y yaz libyaz4-dev
+  - pear channel-update pear.php.net && yes $'\n' | pecl install yaz && pear install Structures_LinkedList-0.2.2 && pear install File_MARC
+  - sudo service apache2 restart
+  - if php -i | grep yaz --quiet && echo '<?php exit(function_exists("yaz_connect")?0:1);' | php ; then echo "YAZ is installed"; else echo "YAZ installation failed"; exit 1; fi;
 
 install:
   - echo "travis_fold:start:npm_install"
   - echo "Installing dependencies..."
-  # package-lock is platform-specific and cannot be reused from Mac
   - [[ -f package-lock.json ]] && rm package-lock.json
   - rm -rf node_modules
   - npm install npm@latest -g
