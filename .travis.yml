@@ -10,6 +10,7 @@ cache:
   directories:
     - node_modules
     - $HOME/.composer/cache/files
+    - src/vcslib
 
 before_install:
   - echo "Installing prerequisites..."
@@ -29,13 +30,7 @@ install:
 #  - rm -rf node_modules
   - npm install npm@latest -g
   - npm install
-#  - npm link mocha
   - echo "travis_fold:end:npm_install"
-#  - echo "Building Bibliograph..."
-#  - pushd src/client/bibliograph
-# doesn't work yet, skip
-#  - qx compile ../../../build/env/travis/compile.json --all-targets
-  - popd
   - echo "Installation scripts finished successufully."
 
 before_script:
