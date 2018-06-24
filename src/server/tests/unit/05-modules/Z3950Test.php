@@ -24,7 +24,6 @@ class Z3950Test extends \app\tests\unit\Base
    */
   public function testYaz()
   {
-    codecept_debug($_ENV);
     $this->markTestSkipped("Doesn't work on Travis...");
     /** @var Module $module */
     $module = Yii::$app->getModule("z3950");
