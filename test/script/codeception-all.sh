@@ -19,7 +19,7 @@ $YII_CMD migrate/up --migrationNamespaces=app\\migrations\\data $MIGRATE_ARGS &>
 $YII_CMD migrate/up --migrationNamespaces=app\\tests\\migrations $MIGRATE_ARGS &> /dev/null
 
 echo "Running unit tests ..."
-$CPT_CMD run unit --debug || exit $?
+$CPT_CMD run unit || exit $?
 
 echo "Restoring emtpy database ..."
 mysql -uroot -e "DROP DATABASE tests;" || true

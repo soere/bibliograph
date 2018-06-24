@@ -11,11 +11,11 @@ SERVER_CMD="yii serve 127.0.0.1:8080 -t=@app/tests"
 
 # Start a PHP server and finish it when the script ends
 pushd $SERVER_PATH > /dev/null
-php $SERVER_CMD & # &> /dev/null &
+php $SERVER_CMD &> /dev/null &
 bg_pid=$!
 trap "kill -2 $bg_pid" 2
-ps
-ps | grep "[p]hp $SERVER_CMD" #> /dev/null
+ps ax
+ps ax | grep "[p]hp $SERVER_CMD" #> /dev/null
 if [ $? -eq 1 ]; then
   echo "Failed to start test server..."
   # exit 1
