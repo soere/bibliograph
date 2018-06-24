@@ -3,9 +3,12 @@ language: php
 php:
   - '7.0'
   - '7.1'
+  - '7.2'
+
 services:
   - mysql
   - docker
+
 cache:
   directories:
     - node_modules
@@ -40,3 +43,10 @@ before_script:
 script:
   - npm test
   - npm run dist-create
+
+deploy:
+  provider: script
+  script: bash build/env/docker/docker_push.sh
+  on:
+    all_branches: true
+#    branch: master

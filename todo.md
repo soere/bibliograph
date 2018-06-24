@@ -36,6 +36,7 @@
 - [ ] FEAT: Alert errors during import ("x references skipped...")
 - [ ] FEAT: Add a silent abort error that can be used to terminate a request without an error message
 - [ ] FEAT: Reimplement support for the admindb, userdb and tmpdb settings in app.conf.toml -> use DSNs instead of single settings or TOML nested arrays.
+- [ ] FEAT: Add some initial references
 
 ### Code cleanup / refactoring
 - [ ] use DatasourceTrait::datasource() consistently instead of Dataource::getInstanceFor(), since it provides access control!
@@ -93,7 +94,6 @@
 - [ ] Move config/test.php to tests/config.php 
 - [ ] Replace compile.json by compile.js to dynamically include plugin code
 - [ ] Check log email target to be able to remotely monitor fatal errors
-
 
 ## v3.0.0.RC.X (only bug fixes)
 
