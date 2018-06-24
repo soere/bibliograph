@@ -5,6 +5,10 @@ php:
   - '7.1'
 services:
   - mysql
+cache:
+  directories:
+  - node_modules
+  - $HOME/.composer/cache/files
 
 before_install:
   - echo "Installing prerequisites..."
@@ -29,7 +33,7 @@ install:
   - echo "travis_fold:end:npm_install"
   - echo "Building Bibliograph..."
   - pushd src/client/bibliograph
-  - qx compile ../../../build/environments/travis/compile.json --all-targets
+  - qx compile ../../../build/env/travis/compile.json --all-targets
   - popd
   - echo "Installation scripts finished successufully."
 
