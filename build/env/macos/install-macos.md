@@ -1,4 +1,4 @@
-# Installing the dependencies on MacOS
+# Installing the development environment on MacOS
 
 ## PHP via Homebrew
 
@@ -41,4 +41,6 @@ Check with `php -i | grep yaz` if yaz has been correctly installed.
 - `brew install nvm`
 - `nvm install 8` 
 
-
+## Travis
+The [travis command line client](https://github.com/travis-ci/travis.rb/blob/master/README.md) is used to
+lint the .travis.yaml file. `gem install travis` should work on any recent Mac OS version.
