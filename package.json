@@ -20,7 +20,7 @@
   "scripts": {
     "start": "build/script/start-server.sh",
     "list": "node_modules/.bin/ls-scripts",
-    "preinstall": "export GIT_HOOKS_PATH=./build/hooks",
+    "preinstall": "export GIT_HOOK_PATH=./build/hooks",
     "postinstall": "build/script/update-dependencies.sh",
     "server": "build/script/start-server.sh",
     "test": "test/script/codeception-all.sh && test/script/api.sh || exit $?",
