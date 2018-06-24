@@ -44,3 +44,6 @@ Check with `php -i | grep yaz` if yaz has been correctly installed.
 ## Travis
 The [travis command line client](https://github.com/travis-ci/travis.rb/blob/master/README.md) is used to
 lint the .travis.yaml file. `gem install travis` should work on any recent Mac OS version.
+
+## Install git hooks
+`echo "export GIT_HOOKS_DIR=./build/hooks" >> ~/.bash_profile`
