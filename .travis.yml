@@ -16,7 +16,6 @@ before_install:
   - sudo apt-get install -y php${PHPVERSION}-xsl php${PHPVERSION}-intl
   - sudo apt-get install -y yaz libyaz4-dev
   - pear channel-update pear.php.net && yes $'\n' | pecl install yaz && pear install Structures_LinkedList-0.2.2 && pear install File_MARC
-  - sudo service apache2 restart
   - if php -i | grep yaz --quiet && echo '<?php exit(function_exists("yaz_connect")?0:1);' | php ; then echo "YAZ is installed"; else echo "YAZ installation failed"; exit 1; fi;
 
 install:
