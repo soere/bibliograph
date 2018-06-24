@@ -21,7 +21,7 @@ before_install:
 install:
   - echo "travis_fold:start:npm_install"
   - echo "Installing dependencies..."
-  - if ! [[ -f package-lock.json ]]; then rm package-lock.json; fi 
+  - if [[ -f package-lock.json ]]; then rm package-lock.json; fi 
   - rm -rf node_modules
   - npm install npm@latest -g
   - npm install
@@ -35,6 +35,7 @@ install:
 
 before_script:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS tests;'
+  - cp build/env/travis/app.conf.toml src/server/config
   
 script:
   - npm test
