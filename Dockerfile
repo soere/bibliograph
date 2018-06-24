@@ -1,58 +1,40 @@
 # Bibliograph - Online Bibliographic Data Manager
 # Build the latest GitHub master
-# todo: use MarvAmBass/docker-apache2-ssl-secure or similar image as base
 
-FROM ubuntu:14.04
+FROM ubuntu:18.04
 MAINTAINER Christian Boulanger <info@bibliograph.org>
 
+# Environment variables for the setup
 ENV DEBIAN_FRONTEND noninteractive
+ENV DOCKER_RESOURCES_DIR=build/env/docker
+ENV BIB_DIST_DIR=dist
+ENV BIB_VAR_DIR /var/lib/bibliograph
+ENV BIB_DEPLOY_DIR /var/www/html
+ENV BIB_CONF_DIR /var/www/html/bibliograph/server/config/
+ENV BIB_USE_HOST_MYSQL no
+ENV BIB_MYSQL_USER root
+ENV BIB_MYSQL_PASSWORD ""
 
 # Packages
 RUN apt-get update && apt-get install -y \
-  supervisor apache2 libapache2-mod-php5 php5-cli \
-  mysql-server php5-mysql \
-  bibutils \
-  php5-dev php-pear \
-  wget \
-  php5-xsl php5-intl\
-  yaz libyaz4-dev \
-  zip \
-  git
+  bibutils wget zip \
+  supervisor \
+  apache2 libapache2-mod-php \
+  mysql-server \
+  php-{cli,intl,xsl,mbstring,mcrypt,mysql,zip,dev,pear} \
+  yaz libyaz4-dev
 
 # Install php-yaz
 RUN pecl install yaz && \
   pear install Structures_LinkedList-0.2.2 && \
   pear install File_MARC && \
-  echo "extension=yaz.so" >> /etc/php5/apache2/php.ini && \
-  echo "extension=yaz.so" >> /etc/php5/cli/php.ini
+  echo "extension=yaz.so" >> /etc/php7/apache2/php.ini && \
+  echo "extension=yaz.so" >> /etc/php7/cli/php.ini
 
-# enable SSL, not working
-RUN /bin/ln -sf ../sites-available/default-ssl /etc/apache2/sites-enabled/001-default-ssl && \
-  a2enmod ssl && a2enmod socache_shmcb
-  
-# Environment variables for the setup
-ENV DOCKER_RESOURCES_DIR=build/environments/docker
-ENV BIB_VAR_DIR /var/lib/bibliograph
-ENV BIB_DEPLOY_DIR /var/www/html
-ENV BIB_CONF_DIR /var/www/html/bibliograph/services/config/
-ENV BIB_USE_HOST_MYSQL no
-ENV BIB_MYSQL_USER root
-ENV BIB_MYSQL_PASSWORD secret
+# copy dist directory, remove unneeded files
+COPY $BIB_DIST_DIR/* $BIB_DEPLOY_DIR
+RUN rm /*.zip
 
-# checkout the bibliograph's master branch on GitHub and build qooxdoo app
-RUN rm -rf /var/www/html/* && \
-  git clone https://github.com/cboulanger/bibliograph.git && \
-  cd bibliograph && \
-  git clone https://github.com/qooxdoo/qooxdoo.git && \
-  cd bibliograph && \
-  ./generate.py -I build && \
-  cd .. && \
-  mv bibliograph /var/www/html && \
-  cd ../.. && \
-  echo "<?php header('location: /bibliograph/build');" > $BIB_DEPLOY_DIR/index.php && \
-  mkdir -p $BIB_VAR_DIR && chmod 0777 $BIB_VAR_DIR && \
-  echo "all" > $BIB_DEPLOY_DIR/bibliograph/plugins.txt
-  
 # add configuration files
 COPY $DOCKER_RESOURCES_DIR/app.conf.toml $BIB_CONF_DIR/app.conf.toml
 COPY $DOCKER_RESOURCES_DIR/server.conf.php $BIB_CONF_DIR/server.conf.php

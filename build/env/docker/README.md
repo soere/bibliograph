@@ -3,10 +3,9 @@ Bibliograph Docker Image
 
 This is a preconfigured image of the web-based bibliographic data manager [Bibliograph](http://www.bibliograph.org) 
 running in an Ubuntu container. It's an easy way to try the application out and see whether it 
-provides what you need. The docker setup is simple and should not be used in production. 
-Improvements are very welcome.
+provides what you need. The docker setup is simple and must NOT be used in production. 
 
-The container uses the latest [master branch at GitHub](https://github.com/cboulanger/bibliograph/tree/master)
+The container uses the latest [release at GitHub](https://github.com/cboulanger/bibliograph/releases)
 
 Building and running of the Image
 ---------------------------------
@@ -37,30 +36,7 @@ sudo docker run -d -p 80:80 cboulanger/bibliograph
 Data persistence
 ----------------
 
-By default, the data of the container is insulated inside the container and gone 
-when you remove the container. If you want to access or backup this data, you can a)
-mount the data directories to the host, b) use a mysql server on the host to store 
-the application data, or c) use a different container to store the data. Here, I only
-address the first two options (even though the third option seems to be best practice).
-
-a) If you want to access or store the container data, mount the mysql data directory
-and the directory containing temporary and cached data by adding these options to your
-`docker run` command:
-
-```
-docker run ... \
- -v /opt/bibliograph/mysql-data:/var/lib/mysql \
- -v /opt/bibliograph/other-data:/var/lib/bibliograph \
-  ...
-```
-
-Replace /opt/bibliograph/XXX with the path to directories you want to use on the host.
-
-NOTE: This should be working according to the Docker Docs and according to Google, 
-but is NOT working in my setup (Ubuntu 15.04): the mysql server doesn't start. Any ideas?
-
-b) If the data should not be stored in the mysql server of the container, but instead
-in an existing mysql server on the host, you can set the following environment variables:
+If the data should be stored in an existing mysql server on the host, you can set the following environment variables:
 
 ```
 docker run .... \
@@ -75,20 +51,8 @@ is allowed to log in only from the docker container's IP address.
 
 Configuration and use
 ---------------------
-The image is configured to install all plugins shipped with the release.
 You can log with the following credentials (username/password):
 
 - user/user
 - manager/manager
 - admin/admin
-
-Please change the password of the admin account immediately by clicking on the "Administrator" button
-on the top left side and delete the "user" and "manager" accounts if you dont need them (via the [Access Control Tool](https://sites.google.com/a/bibliograph.org/docs-v2-en/administration/access-control)).
-
-Issues:
--------
-- https-access on port 443 doesn't work yet. 
-
-If you can improve the docker setup, fork the code and share an improved version.
-In particular, SSL support is needed:  through a user-supplied certificate with 
-a fallback to a self-signed, automatically generated certificate.

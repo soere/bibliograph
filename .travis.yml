@@ -5,6 +5,7 @@ php:
   - '7.1'
 services:
   - mysql
+  - docker
 cache:
   directories:
     - node_modules
@@ -30,8 +31,8 @@ install:
   - npm install
 #  - npm link mocha
   - echo "travis_fold:end:npm_install"
-  - echo "Building Bibliograph..."
-  - pushd src/client/bibliograph
+#  - echo "Building Bibliograph..."
+#  - pushd src/client/bibliograph
 # doesn't work yet, skip
 #  - qx compile ../../../build/env/travis/compile.json --all-targets
   - popd
@@ -43,3 +44,4 @@ before_script:
   
 script:
   - npm test
+  - npm run dist-create
