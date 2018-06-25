@@ -11,15 +11,14 @@ SERVER_CMD="yii serve 127.0.0.1:8080 -t=@app/tests"
 
 # Start a PHP server and finish it when the script ends
 pushd $SERVER_PATH > /dev/null
-php $SERVER_CMD & #&> /dev/null &
+php $SERVER_CMD &> server.out &
 bg_pid=$!
 trap "kill -2 $bg_pid" 2
-ps ax
-ps ax | grep "[p]hp $SERVER_CMD" > /dev/null
-if [ $? -eq 1 ]; then
-  echo "Failed to start test server..."
-  exit 1
-fi
+# ps ax | grep "[p]hp $SERVER_CMD" > /dev/null
+# if [ $? -eq 1 ]; then
+#   echo "Failed to start test server..."
+#  exit 1
+# fi
 echo "Started Bibliograph test server..."
 echo
 
@@ -35,6 +34,8 @@ echo "Running API tests..."
 $CPT_CMD run api --env $CPT_ENV || exit $?
 popd > /dev/null
 echo
+echo "Server errors:"
+cat server.out | grep error
 
 # echo "Running Mocha tests..."
 # mocha -- ./test/**/*.test.js || exit $?
