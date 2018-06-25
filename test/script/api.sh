@@ -32,10 +32,10 @@ rm tests/_output/*fail*
 echo
 echo "Running API tests..."
 $CPT_CMD run api --env $CPT_ENV || exit $?
-popd > /dev/null
 echo
-echo "Server errors:"
-cat server.out | grep error
+echo "Server log:"
+cat server.out
+popd > /dev/null
 
 # echo "Running Mocha tests..."
 # mocha -- ./test/**/*.test.js || exit $?
