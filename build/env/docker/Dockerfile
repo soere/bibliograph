@@ -37,7 +37,7 @@ COPY $BIB_DIST_DIR/ $BIB_DEPLOY_DIR/
 
 # add configuration files
 COPY $DOCKER_RESOURCES_DIR/app.conf.toml $BIB_DEPLOY_DIR/server/config/
-RUN chmod -R 0777 $BIB_DEPLOY_DIR/server/runtime/*
+# RUN chmod -R 0777 $BIB_DEPLOY_DIR/server/runtime/*
 
 # supervisor files
 COPY $DOCKER_RESOURCES_DIR/supervisord-apache2.conf /etc/supervisor/conf.d/supervisord-apache2.conf
