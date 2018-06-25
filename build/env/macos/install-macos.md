@@ -1,9 +1,8 @@
-# Installing the development environment on MacOS
+# Installing the development environment on MacOS with Homebrew
 
-## PHP via Homebrew
+## PHP 
 
-Homebrew completely changed the way to install PHP, PECL and PEAR in April 2018. Here's how it currently seems to work
-(June 2018), with no guarantees that it will work for you. You might want to consider to use https://php-osx.liip.ch/ instead.
+Homebrew completely changed the way to install PHP, PECL and PEAR in April 2018. Here's how it currently seems to work (June 2018), with no guarantees that it will work for you. You might want to consider to use https://php-osx.liip.ch/ instead.
 
 https://medium.com/@jjdanek/installing-php-extensions-on-mac-after-homebrew-acfddd6be602
 https://rinkovec.com/brew-missing-php-extensions/
@@ -36,6 +35,10 @@ yes $'\n' | pecl install yaz
 cp /usr/local/Cellar/php@7.1/7.1.18_1/pecl/20160303/yaz.so /usr/local/Cellar/php@7.1/7.1.18_1/lib/php/20160303
 ```
 Check with `php -i | grep yaz` if yaz has been correctly installed.
+
+## Linters
+- `brew install shellcheck`
+- Travis (see below)
 
 ## Node
 - `brew install nvm`
