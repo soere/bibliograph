@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+echo " >>> reverting changes to local repo ..."
+git checkout .
 REPO=cboulanger/bibliograph
 TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
 echo " >>> Building image $REPO:$TAG' ..."
