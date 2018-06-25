@@ -33,8 +33,11 @@ echo
 echo "Running API tests..."
 $CPT_CMD run api --env $CPT_ENV || exit $?
 echo
+echo "travis_fold:start:server_log"
 echo "Server log:"
 cat server.out
+echo "travis_fold:end:server_log"
+rm server.out
 popd > /dev/null
 
 # echo "Running Mocha tests..."
