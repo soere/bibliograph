@@ -5,4 +5,4 @@ echo " >>> Building image $REPO:$TAG' ..."
 docker build -f ./build/env/docker/Dockerfile -t $REPO:$TAG .
 echo " >>> Pushing to Docker hub...."
 echo "$DOCKER_PASSWORD" | docker login -u cboulanger --password-stdin
-docker push $REPO
+docker push $REPO:$TAG
