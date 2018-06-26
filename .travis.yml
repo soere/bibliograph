@@ -42,12 +42,14 @@ before_script:
   
 script:
   - npm test
-  - npm run dist-create
+
+after_success:
+  - npm run release --token $GITHUB_TOKEN
 
 deploy:
   provider: script
   script: bash build/env/docker/docker_push.sh
   skip_cleanup: true
   on:
-    all_branches: true
-#    branch: master
+#    all_branches: true
+    branch: master
