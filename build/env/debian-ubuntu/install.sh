@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Bibliograph - Online Bibliographic Data Manager
 # Build script to set up a development environment on Debian/Ubuntu with PHP 7.0
 

@@ -5,6 +5,12 @@ php:
   - '7.1'
 #  - '7.2' # Not yet compatible
 
+# don't run for releases
+branches:
+  except:
+  - /^[^0-9v]/
+  - /^tmp-/
+
 services:
   - mysql
   - docker
@@ -44,12 +50,11 @@ script:
   - npm test
 
 after_success:
-  - npm run release --token $GITHUB_TOKEN
+  - npm run dist-create
 
 deploy:
   provider: script
-  script: bash build/env/docker/docker_push.sh
+  script: bash build/env/docker/travis_docker_push.sh
   skip_cleanup: true
   on:
-#    all_branches: true
-    branch: master
+    all_branches: true
