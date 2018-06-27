@@ -3,13 +3,14 @@
 ## v3.0.0-beta
 
 ### Priority: urgent
+- [ ] BUG: fix BIBUTILS_PATH in docker images
 
 ### Priority: high
-- [x] FEAT: User::getAllPermissions returns always the highest available set of permissions, regardless of the permissions of the group the current datasource belongs to. Requires rewriting of  `$this->requirePermission` to pass the datasource / datasource name
 - [ ] BUG: Test if translations work in searches (it doesn't in unit test)
 - [ ] FEAT: Reimplement account management via email
 
 ### Priority: normal
+- [ ] BUG: Z39.50 import: purge U+0098	START OF STRING / U+009C	STRING TERMINATOR from server response
 - [ ] BUG: Reimplement User::checkFormPassword
 - [ ] FEAT: Cache export formats for HTML view, make configurable 
 - [ ] FEAT: Reimplement Search Help 

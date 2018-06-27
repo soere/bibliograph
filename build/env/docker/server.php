@@ -1,7 +1,7 @@
 <?php
 //const YII_ENV='dev';
 const YII_DEBUG=true;
-const BACKUP_PATH="{{BACKUP_PATH}}";
+const BIBUTILS_PATH='/usr/bin/';
 require('server/vendor/autoload.php');
 require('server/vendor/yiisoft/yii2/Yii.php');
 $config = require 'server/config/web.php';

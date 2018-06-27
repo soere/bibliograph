@@ -39,8 +39,10 @@
     "release-clean": "node build/script/github-release-clean.js && build/script/github-tag-clean.sh",
     "docker-build": "build/script/docker-build.sh",
     "docker-start": "build/script/docker-run.sh",
+    "docker-remove": "build/script/docker-remove.sh",
     "docker-all": "npm run dist-create && npm run docker-build && npm run docker-start",
-    "docker-clean": "docker container prune && docker image prune"
+    "docker-clean": "docker container prune -f && docker image prune -f",
+    "docker-remove-all": "build/script/docker-remove.sh && npm run docker-clean"
   },
   "author": "",
   "license": "ISC",

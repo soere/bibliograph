@@ -3,7 +3,7 @@ language: php
 php:
   - '7.0'
   - '7.1'
-#  - '7.2' # Not yet compatible
+ # - '7.2' # Not yet compatible
 
 # don't run for releases
 branches:
@@ -50,7 +50,9 @@ script:
   - npm test
 
 after_success:
+  - echo "travis_fold:start:dist_create"
   - npm run dist-create
+  - echo "travis_fold:end:dist_create"
 
 deploy:
   provider: script
