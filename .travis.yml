@@ -8,7 +8,7 @@ php:
 # don't run for releases
 branches:
   except:
-  - /^[^0-9v]/
+  - /^[0-9v]/
   - /^tmp-/
 
 services:
