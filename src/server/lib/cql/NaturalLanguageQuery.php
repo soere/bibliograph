@@ -403,7 +403,7 @@ class NaturalLanguageQuery extends \yii\base\BaseObject
    * @param ActiveQuery $activeQuery The ActiveQuery object, which will
    * be changed in-place
    */
-  protected function addCondition(\lib\cql\Object $cqlObject, ActiveQuery &$activeQuery)
+  protected function addCondition(\lib\cql\BaseObject $cqlObject, ActiveQuery &$activeQuery)
   {
     if ($cqlObject instanceof Triple) {
       // If triplle, drill deeper

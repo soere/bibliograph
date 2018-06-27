@@ -15,6 +15,7 @@ use app\models\Datasource;
 use app\modules\webservices\models\{ Record, Search, Datasource as WebservicesDatasource };
 use lib\dialog\ServerProgress;
 use lib\exceptions\UserErrorException;
+use yii\web\Response;
 
 /**
  * Class ProgressController
@@ -75,16 +76,18 @@ class SearchController extends \yii\web\Controller
         }
       } catch (UserErrorException $e) {
         Yii::debug($e->getMessage());
-        return $progressBar->error($e->getMessage());
+        $progressBar->error($e->getMessage());
       } catch (RecordNotFoundException $e) {
         Yii::debug($e->getMessage());
-        return $progressBar->error($e->getMessage());
+        $progressBar->error($e->getMessage());
       } catch (\Throwable $e) {
         Yii::error($e);
-        $progressBar->error($e->getMessage());
+        $progressBar->error($e);
       }
     }
-    Yii::$app->getResponse()->isSent = true;
+    $response = Yii::$app->getResponse();
+    $response->isSent = true;
+    $response->format=Response::FORMAT_RAW;
   }
 
   /**

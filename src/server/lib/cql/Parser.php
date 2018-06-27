@@ -640,7 +640,7 @@ class SimpleLex
  * Object which is returned if a problem occurs
  * @author Robert Sanderson
  */
-class Diagnostic extends Object
+class Diagnostic extends BaseObject
 {
   /**
    * @var string
@@ -697,13 +697,13 @@ class Diagnostic extends Object
  * @author Robert Sanderson
  *
  */
-class Object
+class BaseObject
 {
   /** @var string */
   public $value;
-  /** @var ModifierClause[] */
-  public $modifiers;
-  /** @var \lib\cql\Object */
+  /** @var ModifierClause[]|Array */
+  public $modifiers = [];
+  /** @var \lib\cql\BaseObject */
   public $parentNode;
   /** @var Config */
   protected $config;
@@ -773,7 +773,7 @@ class Object
 
 }
 
-class Prefixable extends Object
+class Prefixable extends BaseObject
 {
   /** @var array */
   public $prefixes;
@@ -835,7 +835,7 @@ class Prefixable extends Object
   }
 }
 
-class Prefixed extends Object
+class Prefixed extends BaseObject
 {
   public $prefix;
   public $uri;
@@ -872,7 +872,7 @@ class Prefixed extends Object
     } else {
       $txt = $this->value;
     }
-    if (count($this->modifiers) > 0) {
+    if (is_array($this->modifiers) and count($this->modifiers) > 0) {
       foreach ($this->modifiers as $mod) {
         $txt .= "/" . $mod->toCQL();
       }
@@ -903,16 +903,16 @@ class Prefixed extends Object
 
 class Triple extends Prefixable
 {
-  /** @var \lib\cql\Object */
+  /** @var \lib\cql\BaseObject */
   public $leftOperand;
-  /** @var \lib\cql\Object */
+  /** @var \lib\cql\BaseObject */
   public $rightOperand;
   /** @var \lib\cql\Boolean */
   public $boolean;
   /** @var SortKey[] */
   public $sortKeys;
 
-  public function __construct( \lib\cql\Object &$left, \lib\cql\Object &$right, \lib\cql\Boolean &$boolean)
+  public function __construct(\lib\cql\BaseObject &$left, \lib\cql\BaseObject &$right, \lib\cql\Boolean &$boolean)
   {
     $this->prefixes = [];
     $this->parentNode = null;
@@ -961,7 +961,7 @@ class Triple extends Prefixable
   public function toTxt($depth = 0)
   {
     $space = str_repeat("  ", $depth);
-    $txt = Object::toTxt($depth);
+    $txt = BaseObject::toTxt($depth);
     $txt .= $this->leftOperand->toTxt($depth + 1);
     $txt .= $this->boolean->toTxt($depth + 1);
     $txt .= $this->rightOperand->toTxt($depth + 1);
@@ -1033,7 +1033,7 @@ class SearchClause extends Prefixable
   public function toTxt($depth = 0)
   {
     $space = str_repeat("  ", $depth);
-    $txt = Object::toTXT($depth);
+    $txt = BaseObject::toTXT($depth);
     $txt .= $this->index->toTxt($depth + 1);
     $txt .= $this->relation->toTxt($depth + 1);
     $txt .= $this->term->toTxt($depth + 1);
@@ -1093,7 +1093,7 @@ class Relation extends Prefixed
  * A CQL Term
  * @author Robert Sanderson
  */
-class Term extends Object
+class Term extends BaseObject
 {
   public function __construct($data)
   {
@@ -1110,7 +1110,7 @@ class Term extends Object
   }
 }
 
-class Boolean extends Object
+class Boolean extends BaseObject
 {
   public function __construct($data)
   {
@@ -1166,7 +1166,7 @@ class ModifierType extends Prefixed
   }
 }
 
-class ModifierClause extends Object
+class ModifierClause extends BaseObject
 {
   public $type;
   public $comparison;
@@ -1200,7 +1200,7 @@ class ModifierClause extends Object
   public function toTxt($depth = 0)
   {
     $space = str_repeat("  ", $depth);
-    $txt = $space . Object::toTxt();
+    $txt = $space . BaseObject::toTxt();
     $t = $this->type->toCQL();
     $txt .= "{$space}  type: $t\n";
     if ($this->value) {
@@ -1212,7 +1212,7 @@ class ModifierClause extends Object
 }
 
 
-class SortKey extends Object
+class SortKey extends BaseObject
 {
   /** @var Index */
   public $index;

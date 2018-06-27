@@ -14,6 +14,7 @@ use Exception;
 use lib\exceptions\RecordExistsException;
 use yii\web\UserEvent;
 
+defined('BIBUTILS_PATH') or define('BIBUTILS_PATH','/usr/local/bin/');
 
 /**
  * z3950 module definition class
@@ -25,7 +26,7 @@ class Module extends \lib\Module
    * The version of the module
    * @var string
    */
-  protected $version = "1.0.3";
+  protected $version = "1.0.4";
 
   /**
    * A string constant defining the category for logging and translation

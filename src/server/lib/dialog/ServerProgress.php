@@ -188,6 +188,12 @@ class ServerProgress extends Dialog implements \lib\interfaces\Progress
    */
   public function error(string $message)
   {
+    if( $message instanceof \Throwable ){
+      $e = $message;
+      $message = $e->getMessage() .
+        " in " . $e->getFile() .
+        ", line " . $e->getLine();
+    }
     $this->setProgress(100);
     $this->sendScript([
       "window.progress.hide();",

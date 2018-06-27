@@ -285,6 +285,8 @@ class SearchController extends \yii\web\Controller
     $xml2bib = new Executable( "xml2bib", BIBUTILS_PATH );
     $bibtex = $xml2bib->call("-nl -fc -o unicode", $mods);
     $bibtex = str_replace("\nand ", "; ", $bibtex);
+    // https://stackoverflow.com/questions/23130740/determining-and-removing-invisible-characters-from-a-string-in-php-e2808e/23131396
+    $bibtex = preg_replace('/\p{C}+/u', "", $bibtex);
     //Yii::debug(ml("BibTeX", $bibtex), Module::CATEGORY);
 
     // convert to array

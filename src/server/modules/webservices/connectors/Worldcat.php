@@ -10,6 +10,7 @@ use lib\cql\Prefixable;
 use lib\cql\SearchClause;
 use lib\cql\Triple;
 use app\modules\webservices\AbstractConnector;
+use lib\exceptions\RecordExistsException;
 use WorldCatLD\Entity;
 use WorldCatLD\Manifestation;
 use Yii;
@@ -59,6 +60,8 @@ class Worldcat extends AbstractConnector
    *
    * @param Prefixable $cql
    * @return Manifestation[]
+   * @throws \InvalidArgumentException
+   * @throws RecordExistsException
    * @throws \Throwable
    */
   protected function createManifestations( Prefixable $cql, $retry=0 ) : array {
@@ -88,7 +91,7 @@ class Worldcat extends AbstractConnector
           }
           // try again
           sleep(2);
-          Yii::debug("Server error, retrying...",Module::CATEGORY, __METHOD__);
+          Yii::debug("Server error, retrying...",Module::CATEGORY);
           return $this->createManifestations($cql, $retry+1);
         } catch( \Throwable $e){
           if( $e instanceof \WorldCatLD\exceptions\ResourceNotFoundException
@@ -117,10 +120,12 @@ class Worldcat extends AbstractConnector
   /**
    * @param Prefixable $cql
    * @return  int number of records
+   * @throws \Throwable
    */
   public function search( Prefixable $cql ) : int
   {
     $this->manifestations = $this->createManifestations($cql);
+    if (!is_array($this->manifestations)) return 0;
     return count($this->manifestations);
   }
 
@@ -157,7 +162,7 @@ class Worldcat extends AbstractConnector
         $data['edition'] = $m->bookEdition;
         $data['quality']++;
       }
-      if (count( $m->getIsbns()) ){
+      if (is_array($m->getIsbns()) and count( $m->getIsbns()) ){
         $data['isbn'] = implode("; ", array_slice( $m->getIsbns(), 0,2));
         // since we retrieve many manifestations of the item, we need to priviledge the ones
         // that have the ISBN that we were looking for originally
@@ -205,9 +210,9 @@ class Worldcat extends AbstractConnector
           }
         }
       }
-      if (count($authors)) $data['author'] = implode("; ", $authors);
-      if (count($editors)) $data['editor'] = implode("; ", $editors);
-      if (count($translators)) $data['translator'] = implode("; ", $translators);
+      if (is_array($authors) and count($authors)) $data['author'] = implode("; ", $authors);
+      if (is_array($editors) and count($editors)) $data['editor'] = implode("; ", $editors);
+      if (is_array($translators) and count($translators)) $data['translator'] = implode("; ", $translators);
       if( $m->publisher instanceof Entity ){
         $data['publisher'] = $m->publisher->name;
         $data['quality']++;
