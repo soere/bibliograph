@@ -76,16 +76,6 @@ class SetupController extends \app\controllers\AppController
   protected $hasIni;
 
   /**
-   * Whether we have a db connection
-   */
-  protected $hasDb;
-
-  /**
-   * Whether the user has confirmed to run the migrations
-   */
-  protected $migrationConfirmed = false;
-
-  /**
    * Whether this is a new install of bibliograph without existing data.
    * @var int
    */
@@ -116,15 +106,6 @@ class SetupController extends \app\controllers\AppController
     return Yii::$app->utils->version;
   }
 
-  /**
-   * Called by the confirm dialog
-   * @see actionSetup()
-   */
-  public function actionConfirmMigrations()
-  {
-    $this->migrationConfirmed = true;
-    return $this->actionSetup();
-  }
 
   /**
    * The setup action. Is called as first server method from the client
@@ -317,29 +298,56 @@ class SetupController extends \app\controllers\AppController
     $testMethods = array_filter(\get_class_methods($this), function($method){
       return starts_with($method,"setup");
     });
+    Yii::debug($testMethods, __METHOD__);
     $steps = count($testMethods);
-    $shelfId = $this->shelve($testMethods, $upgrade_from, $upgrade_to, [], [], 1, $steps);
+    $shelfId = $this->shelve(
+      $testMethods,
+      $upgrade_from,
+      $upgrade_to,
+      /* errors */ [],
+      /* messages */[],
+      /* step */ 1,
+      $steps);
+    $message = Yii::t(self::CATEGORY, "Running setup step {step} of {steps}...", [
+      'step' => 1,
+      'steps' => $steps
+    ]);
     (new Popup())
-      ->setMessage(Yii::t(self::CATEGORY, "Starting setup..."))
+      ->setMessage($message)
       ->setRoute("setup/continue")
       ->setParams([$shelfId])
       ->sendToClient();
     return [
-      'message' => "Started 1/$steps setup methods"
+      'message' => $message
     ];
   }
 
   /**
    * Execute next setup method
+   * @param mixed $dummy Value prepended to the arguments by default, not needed here
    * @param string $shelfId
    * @return string diagnostic message
    */
   public function actionContinue($dummy,$shelfId)
   {
-    list( $methods, $upgrade_from, $upgrade_to, $errors, $messages, $step, $steps) = $this->unshelve($shelfId);
+    $list = $this->unshelve($shelfId);
+    //Yii::debug($list,__METHOD__);
+    list(
+      $methods,
+      $upgrade_from,
+      $upgrade_to,
+      $errors,
+      $messages,
+      $step,
+      $steps
+      ) = $list;
+    $this->hasIni = file_exists(APP_CONFIG_FILE);
+    if ($upgrade_from === "2.x") $this->isV2Upgrade = true;
+    if ($upgrade_from === "0.0.0") $this->isNewInstallation = true;
     $method = array_shift($methods);
     Yii::debug("Calling test method '$method'...", __METHOD__);
     try {
+      // run setup method
       $result = $this->$method($upgrade_from, $upgrade_to);
     } catch (SetupException $e) {
       ErrorDialog::create($e->getMessage());
@@ -372,29 +380,53 @@ class SetupController extends \app\controllers\AppController
         $messages = array_merge( $messages, (array) $message );
       }
     }
-    $newShelfId = $this->shelve($methods, $upgrade_from, $upgrade_to, $errors, $messages, ++$step, $steps);
+    $step++;
+    $newShelfId = $this->shelve(
+      $methods,
+      $upgrade_from,
+      $upgrade_to,
+      $errors,
+      $messages,
+      $step,
+      $steps);
     if (!$message){
-      $message = Yii::t(self::CATEGORY, "Setting up application...");
-    } elseif( is_array($message) ){
+      $message = Yii::t(self::CATEGORY, "Running setup step {step} of {steps}...", [
+        'step' => 1,
+        'steps' => $steps
+      ]);
+    } elseif (is_array($message)){
       $message = $message[0];
     }
     $route = count($methods) ? "setup/continue" : "setup/finish";
     (new Popup())
-      ->setMessage( $message . "  ($step/$step)")
+      ->setMessage( $message . "  ($step/$steps)")
       ->setRoute($route)
       ->setParams([$newShelfId])
       ->sendToClient();
+    Yii::debug([
+      "Errors"    => $result['error'] ?? "",
+      "Messages"  => $result['message'] ?? ""
+    ],__METHOD__);
     return $message;
   }
 
   /**
+   * @param mixed $dummy Value prepended to the arguments by default, not needed here
    * @param string $shelfId
    * @return string Diagnostic message
    */
-  public function actionFinish($shelfId)
+  public function actionFinish($dummy,$shelfId)
   {
-    list( $methods, $upgrade_from, $upgrade_to, $errors, $messages, $step, $steps) = $this->unshelve($shelfId);
-    if ( is_array($errors) and count($errors)) {
+    list(
+      $methods,
+      $upgrade_from,
+      $upgrade_to,
+      $errors,
+      $messages,
+      $step,
+      $steps
+      ) = $this->unshelve($shelfId);
+    if (count($errors)) {
       Yii::warning("Setup finished with errors:");
       Yii::warning($errors);
       $msg = Html::tag('b', Yii::t('setup', 'Setup failed. Please fix the following problems:'));
@@ -406,10 +438,9 @@ class SetupController extends \app\controllers\AppController
     Yii::debug($messages, __METHOD__);
 
     // notify client that setup it done
+    Popup::hide();
     $this->dispatchClientMessage("ldap.enabled", Yii::$app->config->getIniValue("ldap.enabled"));
     $this->dispatchClientMessage("bibliograph.setup.done"); // @todo rename
-
-    Popup::hide();
 
     return "Setup finished successfully.";
   }
@@ -513,12 +544,11 @@ class SetupController extends \app\controllers\AppController
   /**
    * Check if the file permissions are correct
    *
-   * @return array
+   * @return array|false
    */
   protected function setupCheckFilePermissions()
   {
     if( ! $this->isNewInstallation ) return false;
-
     $config_dir = Yii::getAlias('@app/config');
     if (!$this->hasIni and YII_ENV_DEV and !\is_writable($config_dir)) {
       return [
@@ -580,7 +610,6 @@ class SetupController extends \app\controllers\AppController
         ])
       ];
     }
-    $this->hasDb = true;
     return [
       'message' => 'Database connection ok.'
     ];
@@ -677,13 +706,13 @@ class SetupController extends \app\controllers\AppController
       };
 
       // unless we're in test mode, let the admin confirm 
-      if (version_compare($upgrade_from, "3.0.0", ">=") and !$this->migrationConfirmed and !YII_ENV_TEST) {
-        $message = Yii::t('setup', "The database must be upgraded. Confirm that you have made a database backup and now are ready to run the upgrade."); // or face eternal damnation.
-        Confirm::create($message, null, "setup", "setup-confirm-migration");
-        return [
-          "abort" => "Admin needs to confirm the migrations"
-        ];
-      }
+//      if (version_compare($upgrade_from, "3.0.0", ">=") and !$this->migrationConfirmed and !YII_ENV_TEST) {
+//        $message = Yii::t('setup', "The database must be upgraded. Confirm that you have made a database backup and now are ready to run the upgrade."); // or face eternal damnation.
+//        Confirm::create($message, null, "setup", "setup-confirm-migration");
+//        return [
+//          "abort" => "Admin needs to confirm the migrations"
+//        ];
+//      }
 
       // run all migrations 
       Yii::debug("Applying migrations...", "migrations", __METHOD__);
@@ -763,7 +792,7 @@ class SetupController extends \app\controllers\AppController
    * @todo change name
    * @return array|boolean
    */
-  protected function setupDatasources()
+  protected function setupDatasources($upgrade_from, $upgrade_to)
   {
     // only create example databases if this is a new installation
     $datasources = !$this->isNewInstallation ? [] : [
