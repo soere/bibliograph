@@ -33,6 +33,13 @@ use yii\helpers\ArrayHelper;
  */
 class Form extends Alert
 {
+
+  /**
+   * The type of the dialog widget
+   */
+  const TYPE = "form";
+
+
   /**
    * Arrray containing the form data. Example (using
    * json instead of native php array):

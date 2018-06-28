@@ -39,6 +39,7 @@
     "release-clean": "node build/script/github-release-clean.js && build/script/github-tag-clean.sh",
     "docker-build": "build/script/docker-build.sh",
     "docker-start": "build/script/docker-run.sh",
+    "docker-log": "build/script/docker-log.sh",
     "docker-remove": "build/script/docker-remove.sh",
     "docker-all": "npm run dist-create && npm run docker-build && npm run docker-start",
     "docker-clean": "docker container prune -f && docker image prune -f",
@@ -68,6 +69,7 @@
     "run-script-os": "^1.0.3",
     "shared-git-hooks": "^1.2.1",
     "standard": "^11.0.0",
+    "testcafe": "^0.20.4",
     "webpack": "^3.10.0"
   },
   "eslintConfig": {

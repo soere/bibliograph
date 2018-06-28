@@ -28,6 +28,11 @@ namespace lib\dialog;
 class Alert extends Dialog
 {
   /**
+   * The type of the dialog widget
+   */
+  const TYPE = "alert";
+
+  /**
    * The message shown in the dialog
    * @var string
    */

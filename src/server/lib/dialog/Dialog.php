@@ -36,11 +36,9 @@ class Dialog extends \yii\base\BaseObject
   const EVENT_DIALOG = "dialog";
 
   /**
-   * The type of the dialog widget
-   * @var string
+   * The type of the dialog. Override in subclasses
    */
-  public $type;
-  public function setType(string $value){$this->type = $value; return $this; }
+  const TYPE = "";
 
   /**
    * The properties that will be set on the widget
@@ -93,7 +91,7 @@ class Dialog extends \yii\base\BaseObject
   public function sendToClient()
   {
     static::createWidget(
-      $this->type,
+      static::TYPE,
       $this->properties,
       $this->service,
       $this->method,

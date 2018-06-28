@@ -28,6 +28,11 @@ use Yii;
  */
 class Confirm extends Alert
 {
+  /**
+   * The type of the dialog widget
+   */
+  const TYPE = "confirm";
+
 
   /**
    * If array, it contains the "Yes" and the "No" message. A third optional

@@ -29,7 +29,7 @@ use Stringy\Stringy;
 use app\models\Schema;
 use lib\components\MigrationException;
 use lib\dialog\{
-  Error as ErrorDialog, Confirm, Login
+  Error as ErrorDialog, Confirm, Login, Popup
 };
 use lib\exceptions\{
   RecordExistsException, SetupException, UserErrorException
@@ -64,7 +64,7 @@ class SetupController extends \app\controllers\AppController
    *
    * @var array
    */
-  protected $noAuthActions = ["setup", "version", "setup-version"];
+  protected $noAuthActions = ["setup", "version", "setup-version","continue","finish"];
 
   protected $errors = [];
 
@@ -189,13 +189,21 @@ class SetupController extends \app\controllers\AppController
       "\n\n\n" . str_repeat("*", 80) . "\n\n BIBLIOGRAPH SETUP\n\n" . str_repeat("*", 80) . "\n\n\n",
       'marker'
     );
+    // if version has changed and we're not in a test, run setup asynchronously to give the user a better feedback
+    $runAsync = false;
     if ($upgrade_to !== $upgrade_from) {
-      Yii::info("Application version has changed from '$upgrade_from' to '$upgrade_to', running setup methods");
+      Yii::info("Application version has changed from '$upgrade_from' to '$upgrade_to'.");
+      $runAsync = !YII_ENV_TEST;
+    }
+    if( $runAsync) {
+      Yii::debug("Running async setup...", __METHOD__);
+      return $this->runSetupMethodsAsync($upgrade_from, $upgrade_to);
     }
     // run methods. If any of them returns a fatal error, abort and alert the user
     // if any non-fatal errors occur, collect them and display them to the user at the
     // end, then consider setup unsuccessful
-    $success = $this->runSetupMethods($upgrade_from, $upgrade_to);
+    Yii::debug("Running sync setup...", __METHOD__);
+    $success = $this->runSetupMethodsSync($upgrade_from, $upgrade_to);
     if ($success) {
       $upgrade_from = $upgrade_to;
       Yii::info("Setup of version '$upgrade_from' finished successfully.");
@@ -205,18 +213,18 @@ class SetupController extends \app\controllers\AppController
       }
       Yii::$app->config->setKeyDefault('app.version', $upgrade_from);
     } else {
-      Yii::warning("Setup of version '$upgrade_to' failed.");
-      Yii::debug([
+      $message = "Setup of version '$upgrade_to' failed.";
+      $data = [
         'errors'   => $this->errors,
         'messages' => $this->messages
-      ], __METHOD__);
-      return null;
+      ];
+      Yii::warning($message);
+      Yii::debug($data, __METHOD__);
+      return $data;
     }
-
     // notify client that setup it done
     $this->dispatchClientMessage("ldap.enabled", Yii::$app->config->getIniValue("ldap.enabled"));
     $this->dispatchClientMessage("bibliograph.setup.done"); // @todo rename
-
     // return errors and messages
     return [
       'errors' => $this->errors,
@@ -225,7 +233,8 @@ class SetupController extends \app\controllers\AppController
   }
 
   /**
-   * Run all existing setup methods, i.e. methods of this class that have the prefix 'setup'.
+   * Run all existing setup methods (methods of this class that have the prefix 'setup')
+   * synchroneously (i.e. for tests).
    * Each method must be executable regardless of application setup state and will be called
    * with the same parameters as this method. The must return one of these value types:
    *
@@ -242,7 +251,7 @@ class SetupController extends \app\controllers\AppController
    *    higher than the
    * @return bool
    */
-  protected function runSetupMethods($upgrade_from, $upgrade_to)
+  protected function runSetupMethodsSync($upgrade_from, $upgrade_to)
   {
     // compile list of setup methods
     foreach (\get_class_methods($this) as $method) {
@@ -292,6 +301,117 @@ class SetupController extends \app\controllers\AppController
     Yii::debug("Setup finished successfully.", __METHOD__);
     Yii::debug($this->messages, __METHOD__);
     return true;
+  }
+
+  /**
+   * Run all existing setup methods asychronously, using a popup to indicate progress
+   *
+   * @param string $upgrade_from
+   *    The current version of the application as stored in the database
+   * @param string $upgrade_to The version in package.json, i.e. of the code, which can be
+   *    higher than the
+   * @return array Diagnostic data
+   */
+  protected function runSetupMethodsAsync($upgrade_from, $upgrade_to)
+  {
+    $testMethods = array_filter(\get_class_methods($this), function($method){
+      return starts_with($method,"setup");
+    });
+    $steps = count($testMethods);
+    $shelfId = $this->shelve($testMethods, $upgrade_from, $upgrade_to, [], [], 1, $steps);
+    (new Popup())
+      ->setMessage(Yii::t(self::CATEGORY, "Starting setup..."))
+      ->setRoute("setup/continue")
+      ->setParams([$shelfId])
+      ->sendToClient();
+    return [
+      'message' => "Started 1/$steps setup methods"
+    ];
+  }
+
+  /**
+   * Execute next setup method
+   * @param string $shelfId
+   * @return string diagnostic message
+   */
+  public function actionContinue($dummy,$shelfId)
+  {
+    list( $methods, $upgrade_from, $upgrade_to, $errors, $messages, $step, $steps) = $this->unshelve($shelfId);
+    $method = array_shift($methods);
+    Yii::debug("Calling test method '$method'...", __METHOD__);
+    try {
+      $result = $this->$method($upgrade_from, $upgrade_to);
+    } catch (SetupException $e) {
+      ErrorDialog::create($e->getMessage());
+      Yii::error("Setup exception: " . $e->getMessage());
+      // @todo deal with diagnostic output
+      return $e->getMessage();
+    } catch (\Exception $e) {
+      ErrorDialog::create($e->getMessage());
+      Yii::error($e);
+      return $e->getMessage();
+    }
+    $message="";
+    if (!$result) {
+      Yii::debug("Skipping method '$method'...", __METHOD__);
+    } else {
+      // @todo replace with SetupException
+      if (isset($result['fatalError'])) {
+        $fatalError = $result['fatalError'];
+        Yii::error($fatalError);
+        ErrorDialog::create($fatalError);
+        return $fatalError;
+      }
+      if (isset($result['error'])) {
+        foreach ( (array) $result['error'] as $error) {
+          $errors[] = "$method: $error";
+        }
+      }
+      if (isset($result['message'])) {
+        $message = $result['message'];
+        $messages = array_merge( $messages, (array) $message );
+      }
+    }
+    $newShelfId = $this->shelve($methods, $upgrade_from, $upgrade_to, $errors, $messages, ++$step, $steps);
+    if (!$message){
+      $message = Yii::t(self::CATEGORY, "Setting up application...");
+    } elseif( is_array($message) ){
+      $message = $message[0];
+    }
+    $route = count($methods) ? "setup/continue" : "setup/finish";
+    (new Popup())
+      ->setMessage( $message . "  ($step/$step)")
+      ->setRoute($route)
+      ->setParams([$newShelfId])
+      ->sendToClient();
+    return $message;
+  }
+
+  /**
+   * @param string $shelfId
+   * @return string Diagnostic message
+   */
+  public function actionFinish($shelfId)
+  {
+    list( $methods, $upgrade_from, $upgrade_to, $errors, $messages, $step, $steps) = $this->unshelve($shelfId);
+    if ( is_array($errors) and count($errors)) {
+      Yii::warning("Setup finished with errors:");
+      Yii::warning($errors);
+      $msg = Html::tag('b', Yii::t('setup', 'Setup failed. Please fix the following problems:'));
+      ErrorDialog::create(\implode('<br>', $this->errors));
+      return "Setup finished with errors";
+    }
+    // Everything seems to be ok
+    Yii::debug("Setup finished successfully.", __METHOD__);
+    Yii::debug($messages, __METHOD__);
+
+    // notify client that setup it done
+    $this->dispatchClientMessage("ldap.enabled", Yii::$app->config->getIniValue("ldap.enabled"));
+    $this->dispatchClientMessage("bibliograph.setup.done"); // @todo rename
+
+    Popup::hide();
+
+    return "Setup finished successfully.";
   }
 
   //-------------------------------------------------------------

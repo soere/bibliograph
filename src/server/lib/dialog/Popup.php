@@ -24,6 +24,44 @@ class Popup extends Dialog
 {
 
   /**
+   * The type of the dialog widget
+   */
+  const TYPE = "popup";
+
+  /**
+   * The message shown in the dialog
+   * @var string
+   */
+  public $message ="";
+
+  /**
+   * @param $value
+   * @return $this
+   */
+  public function setMessage(string $value){$this->message=$value; return $this;}
+
+  /**
+   * @inheritdoc
+   */
+  public function sendToClient()
+  {
+    static::create(
+      $this->message,
+      $this->service,
+      $this->method,
+      $this->params
+    );
+  }
+
+  /**
+   * Hides the popup on the client
+   */
+  static function hide()
+  {
+    (new self())->setMessage("")->sendToClient();
+  }
+
+  /**
    * Returns an event to the client which displays or hides the application popup
    * @param string $message 
    *    The message text
@@ -33,6 +71,7 @@ class Popup extends Dialog
    *    Optional service method
    * @param array $callbackParams 
    *    Optional service params
+   * @deprecated Please use (new Popup())->setMessage()-> ... sendToClient() instead
    */
   public static function create( $message, $callbackService=null, $callbackMethod=null, $callbackParams=null )
   {
