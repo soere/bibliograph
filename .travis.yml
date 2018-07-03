@@ -1,6 +1,5 @@
 dist: trusty
 language: php
-node_js: "stable"
 sudo: required
 php:
   - '7.0'
