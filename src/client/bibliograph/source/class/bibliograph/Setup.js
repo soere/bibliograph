@@ -50,7 +50,7 @@ qx.Class.define("bibliograph.Setup", {
       //  Mixes `getApplication()` into all qooxdoo objects
       qx.Class.include( qx.core.Object, qcl.application.MGetApplication );
       // Mixes `widgetId` property into all qooxdoo objects
-      qx.Class.include( qx.core.Object, qcl.application.MWidgetId );
+      qx.Class.include( qx.ui.core.Widget, qcl.application.MWidgetId );
   
       this.setupClipboard();
 

@@ -48,9 +48,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ip": "^1.1.5",
     "qooxdoo": "^6.0.1",
     "qooxdoo-sdk": "^6.0.0-alpha",
-    "qxcompiler": "^0.2.10",
+    "qxcompiler": "^0.2.13",
     "raptor-client": "github:cboulanger/raptor-client"
   },
   "devDependencies": {
@@ -65,7 +66,7 @@
     "mocha": "^4.1.0",
     "npm-ls-scripts": "^0.1.2",
     "r2": "^2.0.0",
-    "release-it": "^7.3.0",
+    "release-it": "^7.4.7",
     "run-script-os": "^1.0.3",
     "shared-git-hooks": "^1.2.1",
     "standard": "^11.0.0",

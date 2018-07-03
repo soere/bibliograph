@@ -329,35 +329,43 @@ msgid "Duplicates"
 msgstr "Dubletten"
 
 #: dialog/Login.js:200 bibliograph/ui/main/Toolbar.js:64
+#: bibliograph/ui/main/Toolbar.js:66 bibliograph/ui/main/Toolbar.js:65
 msgid "Login"
 msgstr "Anmelden"
 
-#: bibliograph/ui/main/Toolbar.js:78
+#: bibliograph/ui/main/Toolbar.js:78 bibliograph/ui/main/Toolbar.js:80
+#: bibliograph/ui/main/Toolbar.js:79
 msgid "Logout"
 msgstr "Abmelden"
 
-#: bibliograph/ui/main/Toolbar.js:94
+#: bibliograph/ui/main/Toolbar.js:94 bibliograph/ui/main/Toolbar.js:96
+#: bibliograph/ui/main/Toolbar.js:95
 msgid "Loading..."
 msgstr "Lade ..."
 
-#: bibliograph/ui/main/Toolbar.js:111
+#: bibliograph/ui/main/Toolbar.js:111 bibliograph/ui/main/Toolbar.js:113
+#: bibliograph/ui/main/Toolbar.js:112
 msgid "Datasources"
 msgstr "Datenbanken"
 
-#: bibliograph/ui/main/Toolbar.js:126
+#: bibliograph/ui/main/Toolbar.js:126 bibliograph/ui/main/Toolbar.js:128
+#: bibliograph/ui/main/Toolbar.js:127
 msgid "System"
 msgstr "System"
 
 #: bibliograph/ui/window/PreferencesWindow.js:31
-#: bibliograph/ui/main/Toolbar.js:144
+#: bibliograph/ui/main/Toolbar.js:144 bibliograph/ui/main/Toolbar.js:146
+#: bibliograph/ui/main/Toolbar.js:145
 msgid "Preferences"
 msgstr "Optionen"
 
-#: bibliograph/ui/main/Toolbar.js:157
+#: bibliograph/ui/main/Toolbar.js:157 bibliograph/ui/main/Toolbar.js:159
+#: bibliograph/ui/main/Toolbar.js:158
 msgid "Access management"
 msgstr "Zugangskontrolle"
 
-#: bibliograph/ui/main/Toolbar.js:170
+#: bibliograph/ui/main/Toolbar.js:170 bibliograph/ui/main/Toolbar.js:172
+#: bibliograph/ui/main/Toolbar.js:171
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -369,11 +377,13 @@ msgstr "Zurücksetzen"
 msgid "This will reset and reload the application"
 msgstr "Die Anwendung wird zurückgesetzt"
 
-#: bibliograph/ui/main/Toolbar.js:183
+#: bibliograph/ui/main/Toolbar.js:183 bibliograph/ui/main/Toolbar.js:185
+#: bibliograph/ui/main/Toolbar.js:184
 msgid "Import"
 msgstr "Importieren"
 
-#: bibliograph/ui/main/Toolbar.js:200
+#: bibliograph/ui/main/Toolbar.js:200 bibliograph/ui/main/Toolbar.js:202
+#: bibliograph/ui/main/Toolbar.js:201
 msgid "Import text file"
 msgstr "Aus Text/Datei importieren"
 
@@ -389,6 +399,7 @@ msgstr "Hilfe"
 
 #: bibliograph/ui/main/Toolbar.js:216 bibliograph/ui/main/Toolbar.js:225
 #: bibliograph/ui/main/Toolbar.js:233 bibliograph/ui/main/Toolbar.js:234
+#: bibliograph/ui/main/Toolbar.js:236 bibliograph/ui/main/Toolbar.js:235
 msgid "Online Help"
 msgstr "Online-Hilfe"
 
@@ -398,11 +409,13 @@ msgstr "Ein Problem melden oder einen Verbesserungsvorschlag machen"
 
 #: bibliograph/ui/main/Toolbar.js:223 bibliograph/ui/main/Toolbar.js:233
 #: bibliograph/ui/main/Toolbar.js:241 bibliograph/ui/main/Toolbar.js:242
+#: bibliograph/ui/main/Toolbar.js:244 bibliograph/ui/main/Toolbar.js:243
 #: bibliograph/ui/window/AboutWindow.js:27
 msgid "About Bibliograph"
 msgstr "Über Bibliograph"
 
 #: bibliograph/ui/main/Toolbar.js:311 bibliograph/ui/main/Toolbar.js:330
+#: bibliograph/ui/main/Toolbar.js:332 bibliograph/ui/main/Toolbar.js:331
 msgid "Enter search term"
 msgstr "Bitte geben sie einen Suchausdruck ein"
 
@@ -667,7 +680,8 @@ msgid "Application logo"
 msgstr "Anwendungslogo"
 
 #: bibliograph/ui/window/PreferencesWindow.js:86
-#: bibliograph/ui/main/Toolbar.js:217
+#: bibliograph/ui/main/Toolbar.js:217 bibliograph/ui/main/Toolbar.js:219
+#: bibliograph/ui/main/Toolbar.js:218
 msgid "Language"
 msgstr "Sprache"
 
@@ -884,11 +898,13 @@ msgstr "Entwicklung"
 
 #: bibliograph/ui/main/Toolbar.js:241 bibliograph/ui/main/Toolbar.js:251
 #: bibliograph/ui/main/Toolbar.js:259 bibliograph/ui/main/Toolbar.js:260
+#: bibliograph/ui/main/Toolbar.js:262 bibliograph/ui/main/Toolbar.js:261
 msgid "Run RPC method test.test"
 msgstr ""
 
 #: bibliograph/ui/main/Toolbar.js:235 bibliograph/ui/main/Toolbar.js:245
 #: bibliograph/ui/main/Toolbar.js:253 bibliograph/ui/main/Toolbar.js:254
+#: bibliograph/ui/main/Toolbar.js:256 bibliograph/ui/main/Toolbar.js:255
 msgid "Developer"
 msgstr "Entwickler"
 
@@ -965,6 +981,7 @@ msgstr "Suche"
 #: bibliograph/plugins/z3950/ImportWindow.js:250
 #: bibliograph/ui/main/Toolbar.js:279 bibliograph/ui/main/Toolbar.js:289
 #: bibliograph/ui/main/Toolbar.js:297 bibliograph/ui/main/Toolbar.js:298
+#: bibliograph/ui/main/Toolbar.js:300 bibliograph/ui/main/Toolbar.js:299
 #: bibliograph/plugins/webservices/View.js:312
 msgid "Searching..."
 msgstr "Suchabfrage wird ausgeführt…"
@@ -1082,6 +1099,7 @@ msgstr "Das aktuelle Suchergebnis exportieren"
 
 #: bibliograph/ui/main/Toolbar.js:280 bibliograph/ui/main/Toolbar.js:290
 #: bibliograph/ui/main/Toolbar.js:298 bibliograph/ui/main/Toolbar.js:299
+#: bibliograph/ui/main/Toolbar.js:301 bibliograph/ui/main/Toolbar.js:300
 msgid "Enter search term or ? for suggestions"
 msgstr "Geben Sie einen Suchausdruck ein oder ? für eine Auswahl an Suchfeldern"
 
@@ -1105,6 +1123,7 @@ msgstr "Die aktuelle Suche als obersten Ordner speichern"
 
 #: bibliograph/ui/main/Toolbar.js:278 bibliograph/ui/main/Toolbar.js:288
 #: bibliograph/ui/main/Toolbar.js:296 bibliograph/ui/main/Toolbar.js:297
+#: bibliograph/ui/main/Toolbar.js:299 bibliograph/ui/main/Toolbar.js:298
 msgid "No results"
 msgstr "Keine Ergebnisse"
 

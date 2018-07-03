@@ -1,0 +1,1 @@
+module.exports = 'http://localhost:9090/client/bibliograph/build-compiled/index.html';

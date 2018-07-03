@@ -5,7 +5,7 @@
 
 #set -o errexit
 
-HOST=localhost:9090
+HOST=127.0.0.1:9090
 SERVER_PATH=src/
 TARGET=${1:-source}
 APP_PATH=client/bibliograph/$TARGET-compiled/index.html

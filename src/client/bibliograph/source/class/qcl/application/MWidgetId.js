@@ -19,37 +19,34 @@
 
 
 /**
- * A mixin for to qx.core.Object that provides central access to widgets by
+ * A mixin for to qx.ui.core.Widget that provides central access to widgets by
  * a global id stored at the application instance.
  *  TODO: registry needs to be in this mixin, not in the application
  */
 qx.Mixin.define("qcl.application.MWidgetId",
 {
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */  
-  properties : 
+  properties :  
   {
-    widgetId :
-    {
+    widgetId : {
       check : "String",
-      nullable : true,
       apply : "_applyWidgetId"
     }
   },
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
   members :
   {
-    _applyWidgetId : function(value,oldValue)
-    {
+    _applyWidgetId : function(value,oldValue) {
       this.getApplication().setWidgetById(value,this);
+      if (typeof this.getContentElement === "function" ){
+        this.getContentElement().setAttribute('id',value);
+      }
+    },
+    /**
+     * Set the widget id and return object
+     * @param id {String}
+     */
+    withId: function(id){
+      this.setWidgetId(id);
+      return this;
     }
   }
 });

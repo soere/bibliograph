@@ -36,16 +36,17 @@ qx.Class.define("bibliograph.ui.main.Toolbar",
 
     let toolBarPart = new qx.ui.toolbar.Part();
     toolBar.add(toolBarPart);
-    toolBarPart.add(this.createLoginButton());
-    toolBarPart.add(this.createLogoutButton());
-    toolBarPart.add(this.createUserButton());
+    let loginButton = this.createLoginButton().withId("app/toolbar/login");
+    toolBarPart.add(loginButton);
+    toolBarPart.add(this.createLogoutButton().withId("app/toolbar/logout"));
+    toolBarPart.add(this.createUserButton().withId("app/toolbar/create-user"));
 
     let toolBarPart2 = new qx.ui.toolbar.Part();
     toolBar.add(toolBarPart2);
-    toolBarPart2.add(this.createDatasourceButton());
-    toolBarPart2.add(this.createSystemMenu());
-    toolBarPart2.add(this.createImportMenu());
-    toolBarPart2.add(this.createHelpMenu());
+    toolBarPart2.add(this.createDatasourceButton().withId("app/toolbar/datasource"));
+    toolBarPart2.add(this.createSystemMenu().withId("app/toolbar/system"));
+    toolBarPart2.add(this.createImportMenu().withId("app/toolbar/import"));
+    toolBarPart2.add(this.createHelpMenu().withId("app/toolbar/help"));
     // @todo toggle with server config
     //toolBarPart2.add(this.createDeveloperMenu());
 
