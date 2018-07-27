@@ -37,8 +37,9 @@
     "dist-clean": "build/script/dist-clean.sh",
     "release": "build/script/dist-clean.sh && npx release-it --preRelease=beta",
     "release-clean": "node build/script/github-release-clean.js && build/script/github-tag-clean.sh",
-    "docker-build": "docker build -f build/env/docker/Dockerfile -t cboulanger/bibliograph .",
-    "docker-start": "docker run -d -p 127.0.0.1:7070:80 cboulanger/bibliograph",
+    "docker-build": "build/script/docker-build.sh",
+    "docker-start": "build/script/docker-run.sh",
+    "docker-all": "npm run dist-create && npm run docker-build && npm run docker-start",
     "docker-clean": "docker container prune && docker image prune"
   },
   "author": "",
@@ -46,7 +47,7 @@
   "dependencies": {
     "qooxdoo": "^6.0.1",
     "qooxdoo-sdk": "^6.0.0-alpha",
-    "qxcompiler": "^0.2.10",
+    "qxcompiler": "^0.2.14",
     "raptor-client": "github:cboulanger/raptor-client"
   },
   "devDependencies": {
@@ -56,6 +57,7 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eventsource": "^1.0.5",
+    "git-hooks": "^1.1.10",
     "github-remove-all-releases": "^1.0.1",
     "json-diff": "^0.5.2",
     "mocha": "^4.1.0",

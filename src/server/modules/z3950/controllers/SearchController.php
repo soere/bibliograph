@@ -49,8 +49,7 @@ class SearchController extends \yii\web\Controller
    * @param string $datasource The name of the datasource
    * @param string $query The cql query
    * @param string $id The id of the progress widget
-   * @return string Chunked HTTP response
-   * @todo use DTO
+   * @return void
    */
   public function actionProgress($datasource, $query, $id)
   {
@@ -59,22 +58,23 @@ class SearchController extends \yii\web\Controller
     try {
       $this->sendRequest($datasource, $query, $progressBar);
       $progressBar->dispatchClientMessage("z3950.dataReady", $query);
-      return $progressBar->complete();
+      $progressBar->complete();
     } catch (YazTimeoutException $e) {
       // retry
       if( $retries < 4){
         $progressBar->setProgress(0, Yii::t("z3950", "Server timed out. Trying again..."));
         sleep(rand(1,3));
-        return $this->actionProgress($datasource, $query, $progressBar );
+        $this->actionProgress($datasource, $query, $progressBar );
       } else {
-        return $progressBar->error(Yii::t("z3950", "Server timed out."));
+        $progressBar->error(Yii::t("z3950", "Server timed out."));
       }
     } catch (UserErrorException $e) {
-      return $progressBar->error($e->getMessage());
+      $progressBar->error($e->getMessage());
     } catch (Exception $e) {
       Yii::error($e);
-      return $progressBar->error($e->getMessage());
+      $progressBar->error($e->getMessage());
     }
+    Yii::$app->getResponse()->isSent = true;
   }
 
   /**
